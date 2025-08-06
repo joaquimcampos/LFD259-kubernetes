@@ -1,0 +1,17 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sleepy
+spec:
+  schedule: "*/1 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          # activeDeadlineSeconds: 2
+          containers:
+          - name: resting
+            image: busybox
+            command: ["/bin/sleep"]
+            args: ["3"]
+          restartPolicy: Never
