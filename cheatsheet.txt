@@ -1,0 +1,20 @@
+### General
+
+# All API resource
+kubectl api-resources
+
+
+kubectl create deploy --image=nginx -o yaml --dry=run=true
+
+
+### Taints
+kubectl taint --help
+# Remove from node 'foo' the taint with key 'dedicated' and effect 'NoSchedule'
+kubectl taint nodes foo dedicated:NoSchedule-
+
+# Remove from node 'foo' all the taints with key 'dedicated'
+kubectl taint nodes foo dedicated-
+  
+# Add to node 'foo' a taint with key 'bar' and no value
+kubectl taint nodes foo bar:NoSchedule
+ 
