@@ -1,13 +1,87 @@
-### General
+## General
 
-# All API resource
+## All API resource
 kubectl api-resources
 
+## Get several resources
+kubectl get pod,svc,deploy
 
-kubectl create deploy --image=nginx -o yaml --dry=run=true
+## Apply
+kubectl apply -f [resource].yaml
+kubectl create -f [resource].yaml
+kubectl replace -f [resource].yaml
 
+## Info
+kubectl explain [resource]
+kubectl explain [resource].spec | grep "<"
+kubectl explain pod.spec | grep -e "-required-"
+kubectl explain [resource].spec --recursive
 
-### Taints
+## Get, Describe
+kubectl get [resource]
+kubectl get [resource] [name]
+kubectl get [resource] -n [namespace]
+kubectl get [resource] --all-namespaces
+kubectl get [resource] -o yaml
+kubectl get [resource] -o yaml > resource.yaml
+kubectl get [resource] -o wide
+kubectl describe [resource] [name]
+kubectl get events
+
+## Delete
+kubectl delete resource name
+
+## Resources
+pod
+svc
+taint
+deploy
+rs (replicaset)
+ep (endpoints)
+
+## Network
+curl ifconfig.io  # get node/container ip address
+
+## Services
+# check if service is reaching pod
+kubectl get endpoints [svc]
+kubectl get pod -o wide
+curl [svc-IP]:port
+
+## Pods
+kubect get pod -o wide  # get pod IP
+kubectl get pod [pod] --show-labels
+kubectl exec [-it] [pod] -c [container] -- /bin/bash
+
+## Deployment
+kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> -o yaml --dry-run=true > deploy.yaml
+
+## Nodes
+kubectl get nodes -o wide
+kubectl describe nodes
+
+## Namespaces
+kubectl get namespaces
+
+## Debug
+kubectl describe [resource]
+kubectl logs [pod] [container] -n [namespace]
+
+## Containers
+[sudo] podman build -t [image-tag] .
+podman image ls
+podman run [image-tag]
+podman image push/pull [image-tag]
+podman volume ls
+podman exec -it [image-tag] bash
+podman logs [container-id]
+poman stop [container-id]
+podman rm [container-id]
+
+## Taints
+
+kubectl describe nodes | grep -i taint
+
 kubectl taint --help
 # Remove from node 'foo' the taint with key 'dedicated' and effect 'NoSchedule'
 kubectl taint nodes foo dedicated:NoSchedule-
@@ -17,4 +91,20 @@ kubectl taint nodes foo dedicated-
   
 # Add to node 'foo' a taint with key 'bar' and no value
 kubectl taint nodes foo bar:NoSchedule
- 
+
+## Local registry
+kubectl get svc | grep registry
+repo=[registry-ip]:[registry-port]
+curl $repo/v2/_catalog
+podman image tag $repo/[image-tag]
+podman image push $repo/[image-tag]
+podman image pull $repo/[image-tag]
+
+## awk
+kubectl get pods secondapp -o wide | awk -F'  +' '{print $1, $3}'  # fields 1 & 3
+kubectl get pods -l app=try1 | awk -F'  +' 'NR> 1 {print $1, $3}'
+kubectl get pods -l app=try1 --no-headers | awk -F'  +' '{print $1, $3}'
+echo $(kubectl get svc | awk -F'  +' '$1 == "registry" {print $1, $3}')
+
+## Miscelaneous
+echo $?  # print the status of the last command
