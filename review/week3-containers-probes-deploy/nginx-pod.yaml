@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+  labels:
+    type: webserver
+    app: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+    startupProbe:
+      tcpSocket:
+        port: 80
+      periodSeconds: 5
+      failureThreshold: 10  # allows up to 50 seconds before failing
+    readinessProbe:
+      tcpSocket:
+        port: 80
+    livenessProbe:
+      tcpSocket:
+        port: 80
+      initialDelaySeconds: 5
+      periodSeconds: 5

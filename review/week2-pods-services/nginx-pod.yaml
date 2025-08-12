@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+    # labels:
+    # type: webserver-nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80
