@@ -1,0 +1,16 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: weekly
+spec:
+  schedule: "48 18 * * 3"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: busy
+            image: busybox
+            command: ["/bin/sleep"]
+            args: ["30"]
+          restartPolicy: OnFailure

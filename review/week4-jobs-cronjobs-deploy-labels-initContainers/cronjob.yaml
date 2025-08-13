@@ -16,4 +16,5 @@ spec:
             image: busybox
             command: ["/bin/sleep"]
             args: ["3"]
-          restartPolicy: Never
+          # Options: Always, Never, OnFailure
+          restartPolicy: Never  # so that job doesn't restart when it finishes

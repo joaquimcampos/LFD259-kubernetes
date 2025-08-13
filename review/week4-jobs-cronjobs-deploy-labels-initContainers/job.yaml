@@ -14,4 +14,5 @@ spec:
         image: busybox
         command: ["/bin/sleep"]
         args: ["3"]
+      # Options: Always, Never, OnFailure
       restartPolicy: Never  # so that pod doesn't restart after termination
