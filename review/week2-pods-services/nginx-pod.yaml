@@ -10,3 +10,5 @@ spec:
     image: nginx:1.11-alpine
     ports:
     - containerPort: 80
+  nodeSelector:
+    kubernetes.io/hostname: worker  # kubectl get node worker --show-labels

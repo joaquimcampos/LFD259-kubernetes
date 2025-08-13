@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: sleepy
+spec:
+  # "minute(0-59) hour(0-23) day-of-month(1-31) month(1-12) day-of-week(0-7)"
+  schedule: "*/1 * * * *" # run every minute
+  concurrencyPolicy: Allow  # concurrent cronjobs: Allow, Forbid, Replace
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          # activeDeadlineSeconds: 10  # after 10 seconds, cronjob is terminated
+          containers:
+          - name: resting
+            image: busybox
+            command: ["/bin/sleep"]
+            args: ["3"]
+          restartPolicy: Never
