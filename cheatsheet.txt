@@ -35,6 +35,17 @@ kubectl edit [resource] [name]
 ## Delete
 kubectl delete resource name
 
+## Metrics, Memory and CPU
+kubectl top pod [pod-name]
+# memory usage
+kubectl exec -it <pod-name> -n <namespace> -- sh
+top       # shows CPU and memory usage in real time
+free -m   # shows memory usage
+
+# ssh into worker node
+crictl ps | grep [pod-name]
+sudo crictl stats [pod-name]
+
 ## Resources
 pod
 svc
@@ -64,7 +75,7 @@ kubectl create deploy design2 --image=nginx -o yaml
 
 ## Nodes
 kubectl get nodes -o wide
-kubectl describe nodes
+kubectl describe nodes  # allows you to check CPU and memory
 
 ## Namespaces
 kubectl get namespaces
@@ -74,6 +85,12 @@ kubectl get job [job] -o yaml
 
 ## Cronjobs
 kubectl get cj [cronjob] -o yaml
+date # get current time
+
+## Custom resource definitions
+kubectl get crd
+kubectl get crd [crd] -o yaml
+
 
 ## Debug
 kubectl describe [resource]
