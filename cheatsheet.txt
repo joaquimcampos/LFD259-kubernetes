@@ -25,8 +25,12 @@ kubectl get [resource] --all-namespaces
 kubectl get [resource] -o yaml
 kubectl get [resource] -o yaml > resource.yaml
 kubectl get [resource] -o wide
+kubectl -n [namespace] get -l [app=examplepod] [pod]
 kubectl describe [resource] [name]
 kubectl get events
+
+## Edit
+kubectl edit [resource] [name]
 
 ## Delete
 kubectl delete resource name
@@ -55,6 +59,8 @@ kubectl exec [-it] [pod] -c [container] -- /bin/bash
 
 ## Deployment
 kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> -o yaml --dry-run=true > deploy.yaml
+# this automatically assigns label app=design2 and selector: matchLabels: app: design2
+kubectl create deploy design2 --image=nginx -o yaml 
 
 ## Nodes
 kubectl get nodes -o wide
@@ -62,6 +68,12 @@ kubectl describe nodes
 
 ## Namespaces
 kubectl get namespaces
+
+## Jobs
+kubectl get job [job] -o yaml
+
+## Cronjobs
+kubectl get cj [cronjob] -o yaml
 
 ## Debug
 kubectl describe [resource]
