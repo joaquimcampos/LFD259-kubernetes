@@ -37,8 +37,9 @@ kubectl delete resource name
 
 ## Metrics, Memory and CPU
 kubectl top pod [pod-name]
+
 # memory usage
-kubectl exec -it <pod-name> -n <namespace> -- sh
+kubectl exec -it [pod-name] -n [namespace] -- sh
 top       # shows CPU and memory usage in real time
 free -m   # shows memory usage
 
@@ -67,15 +68,50 @@ curl [svc-IP]:port
 kubect get pod -o wide  # get pod IP
 kubectl get pod [pod] --show-labels
 kubectl exec [-it] [pod] -c [container] -- /bin/bash
+kubectl exec [-it] [pod] -c [container] -- /bin/bash -c [cmd]
+kubectl exec [pod] -c [container] -- ls /path
 
-## Deployment
+## Deployment and Rollouts
 kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> -o yaml --dry-run=true > deploy.yaml
-# this automatically assigns label app=design2 and selector: matchLabels: app: design2
-kubectl create deploy design2 --image=nginx -o yaml 
+
+# this automatically assigns label app=my-deploy and selector: matchLabels: app: my-deploy
+kubectl create deploy [my-deploy] --image=[nginx] -o yaml 
+kubectl scale deploy/[my-deploy] --replicas=4
+
+# rollouts
+kubectl rollout history deployment/mydeploy
+kubectl rollout undo [mydeploy]
+kubectl rollout undo [mydeploy] --to-revision=2
+
+# record changes and check
+kubectl set image deploy [mydeploy] [myapp]=[myapp:2.9] --record
+kubectl get deploy [mydeploy] -o yaml
 
 ## Nodes
 kubectl get nodes -o wide
 kubectl describe nodes  # allows you to check CPU and memory
+
+## ConfigMaps and Secrets
+
+# ConfigMaps
+kubectl create configmap [colors] \
+  --from-literal=[text=black] \
+  --from-file=[./favorite] \
+  --from-file=[./primary/]
+kubectl get cm [colors] -o yaml
+kubectl describe cm [colors]
+
+# Secrets
+kubectl get secrets
+kubectl create secret generic --help
+kubectl create secret generic mysql --from-literal=password=root
+
+# check if the configmap/secret as env variables
+kubectl exec [pod] -- env
+kubectl exec [pod] -- echo $[ilike]
+
+# check the configmap/secret mounted as a volume
+kubectl exec -ti [pod] -- cat /path/[key to secret/cm]
 
 ## Namespaces
 kubectl get namespaces
@@ -86,6 +122,11 @@ kubectl get job [job] -o yaml
 ## Cronjobs
 kubectl get cj [cronjob] -o yaml
 date # get current time
+
+## Volumes, PVCs
+kubectl get pv,pvc
+kubectl describe pvc [pvc] # to see why it is not binding
+kubectl describe pod busybox | grep -Ei "mount|volume" -A 6
 
 ## Custom resource definitions
 kubectl get crd
@@ -137,3 +178,7 @@ echo $(kubectl get svc | awk -F'  +' '$1 == "registry" {print $1, $3}')
 
 ## Miscelaneous
 echo $?  # print the status of the last command
+
+# NFS
+showmount -e cp  # in worker node
+sudo mount cp:/opt/sfw /mnt  # in worker node, mount NFS
