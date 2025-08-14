@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:  
+  name: busybox  
+  namespace: default  
+spec:  
+  containers:  
+  - name: alphacont  
+    image: busybox  
+    command:  
+    - sleep  
+    args:
+    - "3600"
+    volumeMounts:  
+    - mountPath: /alphadir  
+      name: scratch-volume 
+  - name: betacont  
+    image: busybox
+    command:
+    - sleep
+    args:
+    - "3600"
+    volumeMounts:  
+    - mountPath: /betadir
+      name: scratch-volume  
+    volumeMounts:  
+    - mountPath: /path
+      name: host-volume  
+  volumes:  
+  - name: host-volume  
+    hostPath:
+      path: /host-path
+      type: DirectoryOrCreate  # or FileOrCreate, Socket, etc.
+  - name: scratch-volume  
+    emptyDir: {}
