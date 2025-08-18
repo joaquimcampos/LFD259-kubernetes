@@ -8,24 +8,24 @@ spec:
   - name: alphacont  
     image: busybox  
     command:  
-    - sleep  
+      - sleep  
     args:
-    - "3600"
+      - "3600"
     volumeMounts:  
-    - mountPath: /alphadir  
-      name: scratch-volume 
+      - mountPath: /alphadir  
+        name: scratch-volume 
   - name: betacont  
     image: busybox
     command:
-    - sleep
+      - sleep
     args:
-    - "3600"
+      - "3600"
     volumeMounts:  
-    - mountPath: /betadir
-      name: scratch-volume  
+      - mountPath: /betadir
+        name: scratch-volume  
     volumeMounts:  
-    - mountPath: /path
-      name: host-volume  
+      - mountPath: /path
+        name: host-volume 
   volumes:  
   - name: host-volume  
     hostPath:

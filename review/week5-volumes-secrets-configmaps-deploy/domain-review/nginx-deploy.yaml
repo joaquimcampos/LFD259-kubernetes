@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foodie
+  creationTimestamp: null
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: nginx
+        name: nginx
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: foodie-secret
+          readOnly: true
+          mountPath: "/food"
+        volumeMounts:
+        - mountPath: "/newvol"
+          name: nfs-vol
+      volumes:
+      - name: foodie-secret
+        secret:
+          secretName: specialoftheday
+      - name: nfs-vol
+        persistentVolumeClaim:
+          claimName: nfs-pvc

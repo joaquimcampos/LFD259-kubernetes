@@ -4,6 +4,7 @@ metadata:
   name: fast-car
   namespace: default
 data:
-  car.make: Ford
+  # will create files car.make, car.model, car.trim when mounted at a location
+  car.make: Ford 
   car.model: Mustang
   car.trim: Shelby

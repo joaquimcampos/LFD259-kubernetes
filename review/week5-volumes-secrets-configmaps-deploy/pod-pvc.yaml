@@ -11,9 +11,17 @@ spec:
       - sleep  
       - "3600"
     volumeMounts:  
-    - name: test-volume
-      mountPath: /vol-path
+      - name: test-volume
+        mountPath: /vol-path
+  - name: fdlogger
+    image: fluentd
+    volumeMounts:
+      - name: weblog-pv-storage
+        mountPath: "/var/log"
   volumes:  
   - name: test-volume
     persistentVolumeClaim:
       claimName: pvc-one 
+  - name: weblop-pv-storage
+    persistentVolumeClaim:
+      claimName: weblop-pv-claim

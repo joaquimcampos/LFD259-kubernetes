@@ -8,6 +8,6 @@ spec:
   resources: 
     requests:
       storage: 200Mi
-# don't set this if standard, otherwise if the PV doesn't have
-# the same storageClassName: standard, it won't bind to it
-# storageClassName: standard
+# Can be "manual" for statistically provisioned volumes: pv needs to have same class.
+# Same with "standard": pv needs to have same class
+# storageClassName: manual

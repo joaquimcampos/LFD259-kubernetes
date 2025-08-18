@@ -9,6 +9,7 @@ spec:
     - ReadWriteOnce  # (RWO), ReadOnlyMany (ROM), ReadWriteMany (RWM)
   # What happens when PV is no longer bound to PVC
   persistentVolumeReclaimPolicy: Retain # Delete, Recycle
+  # storageClassName: manual
   hostPath:   
     path: "/somepath/data01"
     type: DirectoryOrCreate  # or FileOrCreate, Socket
