@@ -58,6 +58,24 @@ ep (endpoints)
 ## Network
 curl ifconfig.io  # get node/container ip address
 
+## Security and Roles
+kubectl create role  # creates Role defining permissions within a single namespace
+kubectl create clusterrole
+kubectl create rolebinding  # grants a Role or ClusterRole within a specific namespace
+kubectl create clusterrolebinding  # grants a ClusterRole across the entire cluster
+kubectl auth reconcile
+kubectl config get-contexts
+
+# Examples
+kubectl create role pod-reader \
+  --verb=get,list \
+  --resource=pods \
+  --namespace=default
+
+kubectl create rolebinding read-pods \
+  --role=pod-reader \
+  --serviceaccount=default:myapp
+
 ## Services
 # check if service is reaching pod
 kubectl get endpoints [svc]
@@ -80,11 +98,17 @@ kubectl scale deploy/[my-deploy] --replicas=4
 
 # rollouts
 kubectl rollout history deployment/mydeploy
-kubectl rollout undo [mydeploy]
+kubectl rollout undo [mydeploy] [--dry-run=client]
 kubectl rollout undo [mydeploy] --to-revision=2
 
+# View differences between revisions
+kubectl rollout history deployment try1 --revision=1 > one.out
+kubectl rollout history deployment try1 --revision=2 > two.out
+diff one.out two.out  # shows version difference
+
 # record changes and check
-kubectl set image deploy [mydeploy] [myapp]=[myapp:2.9] --record
+kubectl set image deploy [mydeploy] [myapp]=[myapp:2.9] --record=true
+kubectl edit deploy [mydeploy] --record=true
 kubectl get deploy [mydeploy] -o yaml
 
 ## Nodes
