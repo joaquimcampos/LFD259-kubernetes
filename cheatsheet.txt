@@ -137,8 +137,13 @@ kubectl get ds myingress-ingress-nginx-controller -o yaml | \
   linkerd inject --ingress - | kubectl apply -f -
 
 ## Pods
+kubectl run [pod] --image=[image] --labels="app=nginx" -n [namespace] [--port 80]
+kubectl run [pod] --image=nginx --labels="app=nginx" --dry-run=client -o yaml > nginx-pod.yaml
+kubectl run [pod] --image=busybox --restart=Never --env="var1=val1" --rm -it --dry-run=client -o yaml -- sleep 500
+kubectl set image pod/nginx nginx=nginx:1.24.0
+
 kubect get pod -o wide  # get pod IP
-kubectl get pod [pod] --show-labels
+kubectl get pod [pod] --show-labels -w  # -w = watch
 kubectl exec [-it] [pod] -c [container] -- /bin/bash
 kubectl exec [-it] [pod] -c [container] -- /bin/bash -c [cmd]
 kubectl exec [pod] -c [container] -- ls /path
@@ -197,7 +202,10 @@ kubectl exec [pod] -- echo $[ilike]
 kubectl exec -ti [pod] -- cat /path/[key to secret/cm]
 
 ## Namespaces
+kubectl create namespace [ns]
 kubectl get namespaces
+kubectl config get-contexts
+kubectl config set-context --current --namespace=my-namespace
 
 ## Jobs
 kubectl get job [job] -o yaml
@@ -221,6 +229,7 @@ kubectl get pods [pod] [-o yaml]
 kubectl describe [resource]  # Look for an unusual number of restarts (probe issues)
 kubectl get events
 kubectl logs [pod] [container] -n [namespace]
+kubectl logs [pod] -p  # previous pod logs
 kubectl logs [node]
 
 # Traffic
