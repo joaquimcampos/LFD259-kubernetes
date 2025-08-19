@@ -55,16 +55,25 @@ deploy
 rs (replicaset)
 ep (endpoints)
 
-## Network
-curl ifconfig.io  # get node/container ip address
-
 ## Security and Roles
 kubectl create role  # creates Role defining permissions within a single namespace
 kubectl create clusterrole
 kubectl create rolebinding  # grants a Role or ClusterRole within a specific namespace
 kubectl create clusterrolebinding  # grants a ClusterRole across the entire cluster
 kubectl auth reconcile
-kubectl config get-contexts
+# combination of user name, cluster name, authinfo, and possibly namespace
+kubectl config get-contexts 
+
+cat /etc/passwd # see users
+
+kubectl get sa  [--all-namespaces] # serviceaccounts
+kubectl get pod [mypod] -o yaml | grep serviceAccount
+kubectl get clusterroles
+kubectl get rolebindings
+
+kubectl create serviceaccount [serviceaccount]
+# Create token for serviceaccount
+kubectl create token serviceaccount > /tmp/securitytoken
 
 # Examples
 kubectl create role pod-reader \
@@ -76,11 +85,56 @@ kubectl create rolebinding read-pods \
   --role=pod-reader \
   --serviceaccount=default:myapp
 
-## Services
+## Services and Network
+kubectl get svc [svc] -o yaml
+
 # check if service is reaching pod
 kubectl get endpoints [svc]
 kubectl get pod -o wide
 curl [svc-IP]:port
+
+curl ifconfig.io  # get node/container ip address
+
+# expose pods and deployments
+# `kubectl expose` automatically chooses --selector based on pod labels
+kubectl expose deployment/nginx --port=80 --type=NodePort
+kubectl expose pod [mypod] --type=NodePort --port=80 
+# Need to explicitly add --selector, but more flexible (e.g. set node port, etc.)
+kubectl create service nodeport [mypod] --tcp=80
+
+# test connection to outside from inside container
+nc -vz 127.0.0.1 80
+nc -vz www.linux.com 80
+
+# DNS
+nslookup [mypod]
+nslookup [IP]  # find FQDN of object with IP (needed for across-node lookups)
+
+# FQDN for "shopping" pod in "multitenant" namespace
+shopping.multitenant.svc.cluster.local
+wget -O - shopping.multitenant # wget and write to stdout
+
+# ingress and service mesh
+# Linkerd: pay attention to an object: inject annotations
+kubectl -n multitenant get deploy mainapp -o yaml | \
+  linkerd inject - | kubectl apply -f -
+
+## Helm & Ingress
+helm search hub ingress
+helm search hub ingress -o yaml | grep nginx
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm fetch ingress-nginx/ingress-nginx --untar
+cd ingress-nginx
+vim values.yaml  # can change Kind to DaemonSet
+helm install myingress .
+
+kubectl --namespace default get services -o wide myingress-ingress-nginx-controller
+kubectl get ing --all-namespaces
+curl -H "Host: www.example.com" http://10.104.227.79
+
+kubectl get ds myingress-ingress-nginx-controller -o yaml | \
+  linkerd inject --ingress - | kubectl apply -f -
 
 ## Pods
 kubect get pod -o wide  # get pod IP
@@ -110,6 +164,9 @@ diff one.out two.out  # shows version difference
 kubectl set image deploy [mydeploy] [myapp]=[myapp:2.9] --record=true
 kubectl edit deploy [mydeploy] --record=true
 kubectl get deploy [mydeploy] -o yaml
+
+# DaemonSet (runs on each node, unlike Deployment)
+kubectl get ds
 
 ## Nodes
 kubectl get nodes -o wide
