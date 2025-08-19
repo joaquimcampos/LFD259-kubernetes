@@ -1,0 +1,22 @@
+1c1
+< apiVersion: extensions/v1
+---
+> apiVersion: apps/v1
+11c11
+<   replicas: 0
+---
+>   replicas: 1
+14c14
+<       run: ugottrouble
+---
+>       run: igottrouble
+32,33c32,33
+<             cpu: "1"
+<             memory: "1Gi"
+---
+>             cpu: "2"
+>             memory: "2Gi"
+35c35
+<             cpu: "2.5"
+---
+>             cpu: "1"
