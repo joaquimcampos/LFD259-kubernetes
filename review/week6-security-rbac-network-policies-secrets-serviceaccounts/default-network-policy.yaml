@@ -1,0 +1,11 @@
+# The empty braces will match all Pods not selected by other NetworkPolicy and will not allow ingress traffic. Egress traffic would be unaffected by this policy.
+# It is useful to do this to first deny all Ingress traffic by default and then allow 
+# some ingress traffic to specific affected pods (`podSelector`) with another NetworkPolicy
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy  
+metadata:  
+  name: default-deny  
+spec:  
+  podSelector: {}  
+  policyTypes:  
+  - Ingress

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2025-08-18T17:59:12Z"
+  labels:
+    app: webtwo
+  name: webtwo
+  namespace: default
+  resourceVersion: "842242"
+  uid: 98106909-798c-4a1f-afc1-ef7d8d0395f2
+spec:
+  clusterIP: 10.104.0.244
+  clusterIPs:
+  - 10.104.0.244
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: "80"
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webtwo
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

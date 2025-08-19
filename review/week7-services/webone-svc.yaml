@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"v1","kind":"Service","metadata":{"annotations":{},"creationTimestamp":"2025-08-18T17:50:39Z","labels":{"app":"webone"},"name":"webone-svc","namespace":"default","resourceVersion":"841194","uid":"964a0649-aeb2-44ca-b355-2839acb6e7f1"},"spec":{"clusterIP":"10.96.3.120","clusterIPs":["10.96.3.120"],"internalTrafficPolicy":"Cluster","ipFamilies":["IPv4"],"ipFamilyPolicy":"SingleStack","ports":[{"port":80,"protocol":"TCP","targetPort":80}],"selector":{"app":"webone"},"sessionAffinity":"None","type":"ClusterIP"},"status":{"loadBalancer":{}}}
+  creationTimestamp: "2025-08-18T17:54:16Z"
+  labels:
+    app: webone
+  name: webone-svc
+  namespace: default
+  resourceVersion: "841650"
+  uid: 57854da3-688e-4d46-9ec3-7bc0fd0fff62
+spec:
+  clusterIP: 10.96.3.120
+  clusterIPs:
+  - 10.96.3.120
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: webone
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

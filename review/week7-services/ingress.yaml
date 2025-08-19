@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-test
+  annotations:
+    # nginx controller annotation
+    # NGINX will forward traffic to svc rather then resolving each endpoint
+    nginx.ingress.kubernetes.io/service-upstream: "true"
+  namespace: default
+spec:
+  ingressClassName: nginx  # ensures nginx-controller will handle this resource
+  rules:
+  - host: www.example.com  # match requests with this hostname
+    http:
+      paths:
+      - backend:
+          # traffic will be sent to secondapp service on port 80
+          service:
+            name: secondapp  
+            port:
+              number: 80
+        path: /  # match the request path starting at /
+        pathType: ImplementationSpecific  # for nginx: "prefix match"
+  - host: thirdpage.org
+    http:
+      paths:
+      - backend:
+          service:
+            name: thirdpage
+            port:
+              number: 80
+        path: /
+        pathType: ImplementationSpecific 

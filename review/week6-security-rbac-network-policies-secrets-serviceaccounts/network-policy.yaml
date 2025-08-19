@@ -1,0 +1,42 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy  
+metadata:
+  name: ingress-egress-policy
+  namespace: default  # only affects the default namespace
+spec:
+  podSelector:
+    matchLabels:
+      role: db  # only affects pods with label "role: db"
+  policyTypes:
+    - Ingress  
+    - Egress  
+  ingress:
+    # accepts TCP traffic on port 6379 from pods with "role: frontend" label and "type: vote|result" OR in the "myproject" namespace OR from the IPs 172.17.*.* except 172.17.1.*
+    - from:  # OR logic, but traffic must match both from: and ports:  
+      - ipBlock:  
+        # accepts traffic to all pods with IP 172.17.*.* except 172.17.1.*
+        cidr: 172.17.0.0/16  
+        except:  
+          - 172.17.1.0/24
+      - namespaceSelector:  
+        matchLabels:
+          # OR accepts traffic from pods in the "myproject" namespace
+          project: myproject
+      - podSelector:
+        # OR accepts traffic from pods with "role: frontend" and "type: vote|result"
+        matchLabels:  
+          role: frontend  
+        matchExpressions:
+          - {key: type, operator: In, values: ["vote", "result"]} 
+      ports:  
+        # only allows TCP traffic to port 6379 from the pods that match from:
+        - protocol: TCP  
+          port: 6379  
+  egress:
+    # Allows egress TCP traffic to port 5978 to pods with IP 10.0.0.*
+    - to:  
+      - ipBlock:  
+        cidr: 10.0.0.0/24  
+      ports:  
+        - protocol: TCP  
+          port: 5978
