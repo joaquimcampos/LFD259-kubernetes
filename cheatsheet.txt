@@ -146,6 +146,8 @@ kubectl exec [pod] -c [container] -- ls /path
 ## Deployment and Rollouts
 kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> -o yaml --dry-run=true > deploy.yaml
 
+kubectl create deploy busy --image=busybox [-o yaml] [--dry-run=client] -- sleep 3600
+
 # this automatically assigns label app=my-deploy and selector: matchLabels: app: my-deploy
 kubectl create deploy [my-deploy] --image=[nginx] -o yaml 
 kubectl scale deploy/[my-deploy] --replicas=4
@@ -213,10 +215,56 @@ kubectl describe pod busybox | grep -Ei "mount|volume" -A 6
 kubectl get crd
 kubectl get crd [crd] -o yaml
 
-
-## Debug
-kubectl describe [resource]
+## Debug and Troubleshooting
+# Work from the application running inside a container to the cluster as a whole
+kubectl get pods [pod] [-o yaml]
+kubectl describe [resource]  # Look for an unusual number of restarts (probe issues)
+kubectl get events
 kubectl logs [pod] [container] -n [namespace]
+kubectl logs [node]
+
+# Traffic
+kubectl get svc [svc] [-o yaml]
+kubectl get ep [svc] [-o yaml] # endpoints
+
+# Then networking, including DNS, firewalls and general connectivity
+# RBAC can give issues: check the policies, roles and clusterbindings
+cat /etc/resolv.conf
+
+kubectl debug -h
+# Deploy a debug container in a pod
+kubectl debug [mypod] --image=[busybox]
+kubectl describe pod | grep debugger
+# Create and attach to it interactively 
+kubectl debug [mypod] -it --image=[busybox]
+# in a node
+kubectl debug node/[node] -it --image=[busybox]
+
+# controllers, RBAC issues
+kubectl -n kube-system get pod
+kubectl -n kube-system logs kube-proxy-*
+
+# iptables
+sudo iptables-save | grep [pod]  # find the destination port
+# in node
+curl localhost:[PORT]
+
+# Commands
+ps
+ps aux
+ps -elf | grep kube-proxy
+df
+du -h[s]
+journalctl -a
+journalctl -a | grep kube-proxy
+/var/log/<agent>.log  # e.g. /var/log/kube-proxy.log
+# test connection to outside from inside container
+nc -vz 127.0.0.1 80
+nc -vz www.linux.com 80
+# DNS
+nslookup [mypod]
+nslookup [IP]  # find FQDN of object with IP (needed for across-node lookups)
+
 
 ## Containers
 [sudo] podman build -t [image-tag] .
