@@ -99,15 +99,24 @@ kubectl get svc [svc] -o yaml
 kubectl get endpoints [svc]
 kubectl get pod -o wide
 curl [svc-IP]:port
+kubectl run tmp --rm -it --restart=Never --image=busybox -- wget -qO- [nginx-svc]
+kubectl create svc clusterip foo --tcp=6262:8080 dro
 
 curl ifconfig.io  # get node/container ip address
 
 # expose pods and deployments
+kubectl run nginx --image=nginx --port=80 --expose=true
 # `kubectl expose` automatically chooses --selector based on pod labels
 kubectl expose deployment/nginx --port=80 --type=NodePort
-kubectl expose pod [mypod] --type=NodePort --port=80 
+kubectl expose pod [mypod] --type=NodePort --port=80
+kubectl expose deploy foo --port=6262 --target-port=8080
 # Need to explicitly add --selector, but more flexible (e.g. set node port, etc.)
 kubectl create service nodeport [mypod] --tcp=80
+
+# network policy test
+kubectl run busybox --image=busybox --rm -it --restart=Never \
+  --labels=access=granted \
+  -- wget -O- http://nginx:80 --timeout 2  # This should be fine
 
 # test connection to outside from inside container
 nc -vz 127.0.0.1 80
@@ -156,6 +165,7 @@ kubectl annotate po nginx{1..3} description='my description'
 kubectl annotate pod nginx1 --list  # check annotations for pod1
 
 kubectl delete pod nginx{1..3}
+kubectl delete po busybox --force --grace-period=0
 
 kubect get po -o wide  # get pod IP
 kubectl get po --label-columns=app  # show a column with the APP labels
@@ -164,10 +174,15 @@ kubectl exec [-it] [pod] -c [container] -- /bin/bash
 kubectl exec [-it] [pod] -c [container] -- /bin/bash -c [cmd]
 kubectl exec [pod] -c [container] -- ls /path
 
+# describe all pods whose livenessProbe failed
+kubectl get pod -o name | \
+  xargs -i{} sh -c "kubectl describe {} | grep -q 'failed liveness probe' && echo {} "
+
 ## Deployment and Rollouts
 kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> --port 80 -r 1 -o yaml --dry-run=true > deploy.yaml  # -r = --replicas
 
 kubectl create deploy busy --image=busybox [-o yaml] [--dry-run=client] -- sleep 3600
+kubectl create deploy foo --image=dgkanatsios/simpleapp --port=8080 --replicas=3
 kubectl get rs -l app=nginx-deploy -o yaml  # rs = replicaset
 kubectl set image deploy nginx nginx=nginx:1.18.0
 kubectl edit deploy nginx
@@ -200,6 +215,7 @@ kubectl get ds
 ## Nodes
 kubectl get nodes -o wide
 kubectl describe nodes  # allows you to check CPU and memory
+kubectl top nodes  # check CPU and memory utilization
 
 ## ConfigMaps and Secrets
 
