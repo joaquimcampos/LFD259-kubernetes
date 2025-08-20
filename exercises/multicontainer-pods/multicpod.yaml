@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busy-pod
+  name: busy-pod
+spec:
+  containers:
+  - args:
+    - sh
+    - -c
+    - echo "hello" && sleep 3600
+    image: busybox
+    name: busy1
+  - args:
+    - sh
+    - -c
+    - echo "hello" && sleep 3600
+    image: busybox
+    name: busy2
+  restartPolicy: OnFailure
+status: {}

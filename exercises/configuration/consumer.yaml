@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: consumer
+  name: consumer
+  namespace: secret-ops
+spec:
+  containers:
+  - image: nginx
+    name: nginx
+    ports:
+    - containerPort: 80
+    envFrom:
+    - secretRef:
+        name: ext-service-secret
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

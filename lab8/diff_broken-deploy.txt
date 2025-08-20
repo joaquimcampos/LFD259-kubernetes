@@ -1,0 +1,8 @@
+1c1
+< apiVersion: extensions/v1beta1
+---
+> apiVersion: apps/v1
+14a15,17
+>   selector:
+>     matchLabels:
+>       app: thirdpage

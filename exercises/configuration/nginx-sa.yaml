@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: nginx-sa
+  name: nginx-sa
+spec:
+  serviceAccountName: myuser
+  containers:
+  - image: nginx
+    name: nginx-sa
+    ports:
+    - containerPort: 80
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

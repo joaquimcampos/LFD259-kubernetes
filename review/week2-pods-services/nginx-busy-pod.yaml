@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx-busy-pod
+    # labels:
+    # type: webserver-nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.11-alpine
+    ports:
+    - containerPort: 80
+  - name: busy
+    image: busybox
+    command:
+      - sleep
+    args:
+      - "3600"
+  restartPolicy: OnFailure  # Always, Never; default: "Always
+  nodeSelector:
+    kubernetes.io/hostname: worker-2  # kubectl get node worker --show-labels
