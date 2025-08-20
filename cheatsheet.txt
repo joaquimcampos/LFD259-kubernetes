@@ -1,5 +1,9 @@
 ## General
 
+# Set
+alias -g do="--dry-run=client -o yaml"
+alias k=kubectl
+
 ## All API resource
 kubectl api-resources
 
@@ -28,6 +32,9 @@ kubectl get [resource] -o wide
 kubectl -n [namespace] get -l [app=examplepod] [pod]
 kubectl describe [resource] [name]
 kubectl get events
+
+## Set
+kubectl set --help
 
 ## Edit
 kubectl edit [resource] [name]
@@ -140,27 +147,42 @@ kubectl get ds myingress-ingress-nginx-controller -o yaml | \
 kubectl run [pod] --image=[image] --labels="app=nginx" -n [namespace] [--port 80]
 kubectl run [pod] --image=nginx --labels="app=nginx" --dry-run=client -o yaml > nginx-pod.yaml
 kubectl run [pod] --image=busybox --restart=Never --env="var1=val1" --rm -it --dry-run=client -o yaml -- sleep 500
-kubectl set image pod/nginx nginx=nginx:1.24.0
 
-kubect get pod -o wide  # get pod IP
+kubectl set image pod/nginx nginx=nginx:1.24.0
+kubectl label po -l "app in (v1,v2)" tier=frontend
+kubectl annotate po [pod] owner=marketing
+kubectl annotate po -l app=v1 owner-  # remove annotation owner
+kubectl annotate po nginx{1..3} description='my description'
+kubectl annotate pod nginx1 --list  # check annotations for pod1
+
+kubectl delete pod nginx{1..3}
+
+kubect get po -o wide  # get pod IP
+kubectl get po --label-columns=app  # show a column with the APP labels
 kubectl get pod [pod] --show-labels -w  # -w = watch
 kubectl exec [-it] [pod] -c [container] -- /bin/bash
 kubectl exec [-it] [pod] -c [container] -- /bin/bash -c [cmd]
 kubectl exec [pod] -c [container] -- ls /path
 
 ## Deployment and Rollouts
-kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> -o yaml --dry-run=true > deploy.yaml
+kubectl create deployment <Deploy-Name> --image=<repo>/<app-name>:<version> --port 80 -r 1 -o yaml --dry-run=true > deploy.yaml  # -r = --replicas
 
 kubectl create deploy busy --image=busybox [-o yaml] [--dry-run=client] -- sleep 3600
+kubectl get rs -l app=nginx-deploy -o yaml  # rs = replicaset
+kubectl set image deploy nginx nginx=nginx:1.18.0
+kubectl edit deploy nginx
 
 # this automatically assigns label app=my-deploy and selector: matchLabels: app: my-deploy
 kubectl create deploy [my-deploy] --image=[nginx] -o yaml 
 kubectl scale deploy/[my-deploy] --replicas=4
+kubectl autoscale deploy nginx --min=5 --max=10 --cpu-percent=80
 
 # rollouts
-kubectl rollout history deployment/mydeploy
+kubectl rollout history deployment/[mydeploy]
+kubectl rollout status deploy [mydeploy]
 kubectl rollout undo [mydeploy] [--dry-run=client]
 kubectl rollout undo [mydeploy] --to-revision=2
+kubectl rollout pause deployment nginx
 
 # View differences between revisions
 kubectl rollout history deployment try1 --revision=1 > one.out
@@ -182,6 +204,8 @@ kubectl describe nodes  # allows you to check CPU and memory
 ## ConfigMaps and Secrets
 
 # ConfigMaps
+kubectl create configmap mycm \
+  --from-literal="foo=lala" --from-literal="foo2=lolo"
 kubectl create configmap [colors] \
   --from-literal=[text=black] \
   --from-file=[./favorite] \
@@ -193,6 +217,9 @@ kubectl describe cm [colors]
 kubectl get secrets
 kubectl create secret generic --help
 kubectl create secret generic mysql --from-literal=password=root
+echo password | base64
+echo YWRtaW4= | base64 -d
+
 
 # check if the configmap/secret as env variables
 kubectl exec [pod] -- env
@@ -209,10 +236,13 @@ kubectl config set-context --current --namespace=my-namespace
 
 ## Jobs
 kubectl get job [job] -o yaml
+kubectl get job [job] -f
+kubectl create job [myjob] --image=perl:5.34 -- sh -c "[command]"
 
 ## Cronjobs
 kubectl get cj [cronjob] -o yaml
 date # get current time
+kubectl create cronjob my-job --image=busybox --schedule="*/1 * * * *" -- date
 
 ## Volumes, PVCs
 kubectl get pv,pvc
@@ -228,7 +258,7 @@ kubectl get crd [crd] -o yaml
 kubectl get pods [pod] [-o yaml]
 kubectl describe [resource]  # Look for an unusual number of restarts (probe issues)
 kubectl get events
-kubectl logs [pod] [container] -n [namespace]
+kubectl logs [pod] [container] -n [namespace] -f  # -f = follow
 kubectl logs [pod] -p  # previous pod logs
 kubectl logs [node]
 
@@ -287,7 +317,6 @@ poman stop [container-id]
 podman rm [container-id]
 
 ## Taints
-
 kubectl describe nodes | grep -i taint
 
 kubectl taint --help
