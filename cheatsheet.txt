@@ -136,14 +136,30 @@ kubectl -n multitenant get deploy mainapp -o yaml | \
   linkerd inject - | kubectl apply -f -
 
 ## Helm & Ingress
+helm create chart-test ## this would create a helm 
+# run a helm chart and override default values
+helm install -f myvalues.yaml myredis ./redis 
+helm list --pending -A  # Find pending Helm deployments on all namespaces
+helm uninstall [-n namespace] mychart  # uninstall a helm release
+helm upgrade -f myvalues.yaml -f override.yaml redis ./redis  # upgrading a helm chart
+
 helm search hub ingress
 helm search hub ingress -o yaml | grep nginx
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-helm repo update
-helm fetch ingress-nginx/ingress-nginx --untar
+helm search repo ingress-nginx
+helm pull ingress-nginx/ingress-nginx --untar
+# helm repo add [NAME] [URL] [flags]
+# helm repo update [REPO1] [flags]
+# helm repo index [DIR] [flags]
+# helm repo remove [REPO1] [flags]
+# helm repo list
+
 cd ingress-nginx
 vim values.yaml  # can change Kind to DaemonSet
 helm install myingress .
+
+helm show values ingress-nginx/ingress-nginx
+helm install mynode bitnami/node --set replicaCount=5
 
 kubectl --namespace default get services -o wide myingress-ingress-nginx-controller
 kubectl get ing --all-namespaces
@@ -151,6 +167,9 @@ curl -H "Host: www.example.com" http://10.104.227.79
 
 kubectl get ds myingress-ingress-nginx-controller -o yaml | \
   linkerd inject --ingress - | kubectl apply -f -
+
+## Kustomize
+kubectl apply -k overlay-folder/
 
 ## Pods
 kubectl run [pod] --image=[image] --labels="app=nginx" -n [namespace] [--port 80]
@@ -249,6 +268,7 @@ kubectl create namespace [ns]
 kubectl get namespaces
 kubectl config get-contexts
 kubectl config set-context --current --namespace=my-namespace
+kubectl config kubectl config use-context dev-context
 
 ## Jobs
 kubectl get job [job] -o yaml
