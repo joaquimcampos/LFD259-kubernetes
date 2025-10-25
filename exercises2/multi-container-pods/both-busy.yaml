@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: both-busy
+  name: both-busy
+spec:
+  containers:
+  - command:
+    - sh
+    - -c
+    - echo hello; sleep 3600
+    image: busybox
+    name: busy1
+  - command:
+    - sh
+    - -c
+    - echo hello; sleep 3600
+    image: busybox
+    name: busy2
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
