@@ -1,0 +1,10 @@
+helm repo list  # list the repositories
+helm repo add [NAME] [URL] [FLAGS]  # add repository
+helm repo add lfs269 https://lfs269.github.io/helm-charts/
+helm repo list
+helm repo update # fetch the index from the repository (contains the list of available helm charts)
+helm search repo lfs269  # search lfs269 repo's charts
+helm search repo postgres  # search for chart with name postgres
+helm list [-n namespace]  # list the releases
+helm install [NAME] [CHART] [flags] [--dry-run]  # deploy a chart (create a release)
+helm uninstall [NAME]  # NAME = release name
