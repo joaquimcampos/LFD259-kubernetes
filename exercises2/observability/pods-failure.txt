@@ -1,0 +1,1 @@
+for ns in instavote ckad; do k get pod -n "$ns" -o name | xargs -I{} sh -c "kubectl describe {} -n $ns | grep -i unhealthy | grep -iq liveness && echo $ns/{}"; done
