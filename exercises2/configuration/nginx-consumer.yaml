@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: consumer
+  name: consumer
+  namespace: secret-ops
+spec:
+  containers:
+  - image: nginx
+    name: consumer
+    resources: {}
+    volumeMounts:
+    - name: ssh-volume
+      readOnly: true
+      mountPath: "/var/app"
+  volumes:
+  - name: ssh-volume
+    secret:
+      secretName: my-secret
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

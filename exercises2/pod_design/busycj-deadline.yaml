@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: busycj
+spec:
+  startingDeadlineSeconds: 17
+  jobTemplate:
+    metadata:
+      name: busycj
+    spec:
+      activeDeadlineSeconds: 12
+      template:
+        metadata: {}
+        spec:
+          containers:
+          - command:
+            - sh
+            - -c
+            - date; echo Hello from the Kubernetes cluster
+            image: busybox
+            name: busycj
+            resources: {}
+          restartPolicy: OnFailure
+  schedule: '*/1 * * * *'
+status: {}
