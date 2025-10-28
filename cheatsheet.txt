@@ -274,11 +274,15 @@ kubectl config kubectl config use-context dev-context
 kubectl get job [job] -o yaml
 kubectl get job [job] -f
 kubectl create job [myjob] --image=perl:5.34 -- sh -c "[command]"
+kubectl logs job/[myjob]
+kubectl logs pod/[myjob-pod]
+k logs jobs/[myjob] --all-pods
 
 ## Cronjobs
 kubectl get cj [cronjob] -o yaml
 date # get current time
 kubectl create cronjob my-job --image=busybox --schedule="*/1 * * * *" -- date
+k logs cj/[mycj] --all-pods
 
 ## Volumes, PVCs
 kubectl get pv,pvc
@@ -314,6 +318,8 @@ kubectl describe pod | grep debugger
 kubectl debug [mypod] -it --image=[busybox]
 # in a node
 kubectl debug node/[node] -it --image=[busybox]
+# debug a node having access to root filesystem
+kubectl debug node/kind-worker2 -it --image=busybox -- chroot /host
 
 # controllers, RBAC issues
 kubectl -n kube-system get pod
@@ -385,3 +391,16 @@ echo $?  # print the status of the last command
 # NFS
 showmount -e cp  # in worker node
 sudo mount cp:/opt/sfw /mnt  # in worker node, mount NFS
+
+# Kustomize
+kubectl kustomize <kustomization directory>/  # get generated yaml
+
+Run one of the following commands to view the Deployment object dev-my-nginx:
+
+kubectl get -k ./
+kubectl describe -k ./
+
+# Run the following command to compare the Deployment object dev-my-nginx against the state that the cluster would be in if the manifest was applied:
+kubectl diff -k ./
+
+kubectl delete -k ./
