@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: hello-pod
+  name: hello-pod
+spec:
+  containers:
+  - image: 34.131.150.254/jcampos15/hello-world
+    name: hello-pod
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+  imagePullSecrets:
+  - name: loginsec
+status: {}

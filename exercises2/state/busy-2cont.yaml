@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busy
+  name: busy
+spec:
+  containers:
+  - command:
+    - sleep
+    - "3600"
+    image: busybox
+    name: busy1
+    volumeMounts:
+    - mountPath: /etc/foo
+      name: shared-vol
+  - command:
+    - sleep
+    - "3600"
+    image: busybox
+    name: busy2
+    resources: {}
+    volumeMounts:
+    - mountPath: /etc/foo
+      name: shared-vol
+  volumes:
+  - name: shared-vol
+    emptyDir: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
