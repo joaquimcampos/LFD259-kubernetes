@@ -1,0 +1,19 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: netpol
+  namespace: ckad
+spec:
+  podSelector:
+    matchLabels:
+      app: nginx2
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          access: granted
+    ports:
+    - protocol: TCP
+      port: 80

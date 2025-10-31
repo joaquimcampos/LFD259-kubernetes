@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: busy-pv
+  name: busy-pv
+spec:
+  containers:
+  - command:
+    - sleep
+    - "3600"
+    image: busybox
+    name: busy-pv
+    resources: {}
+    volumeMounts:
+      - mountPath: "/etc/foo"
+        name: mypv
+  volumes:
+    - name: mypv
+      persistentVolumeClaim:
+        claimName: mypvc
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}
