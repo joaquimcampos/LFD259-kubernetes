@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx-sec
+  name: nginx-sec
+spec:
+  containers:
+  - image: nginx
+    name: nginx-sec
+    resources: {}
+    env:
+    - name: USERNAME 
+      valueFrom:
+        secretKeyRef:
+          name: mysecret2
+          key: username
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

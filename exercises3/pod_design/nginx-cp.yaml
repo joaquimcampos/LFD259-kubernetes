@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx-cp
+  name: nginx-cp
+spec:
+  containers:
+  - image: nginx
+    name: nginx-cp
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+  nodeSelector: 
+    kubernetes.io/hostname: kind-control-plane
+  tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: "Exists"
+    effect: "NoSchedule"
+status: {}

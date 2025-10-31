@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx
+    resources: {}
+    envFrom:
+      - configMapRef:
+          name: anotherone
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

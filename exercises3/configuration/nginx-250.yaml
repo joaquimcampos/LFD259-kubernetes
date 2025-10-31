@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx-250
+  name: nginx-250
+  namespace: limitrange
+spec:
+  containers:
+  - image: nginx
+    name: nginx-250
+    resources:
+      requests:
+        memory: 250Mi
+      limits:
+        memory: 500Mi
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

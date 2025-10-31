@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: nginx-quota
+  name: nginx-quota
+  namespace: one
+spec:
+  containers:
+  - image: nginx
+    name: nginx-quota
+    resources:
+      requests:
+        cpu: "0.5"
+        memory: "1Gi"
+      limits:
+        cpu: "1"
+        memory: "2Gi"
+  dnsPolicy: ClusterFirst
+  restartPolicy: Never
+status: {}

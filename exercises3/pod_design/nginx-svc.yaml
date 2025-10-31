@@ -1,0 +1,32 @@
+# Please edit the object below. Lines beginning with a '#' will be ignored,
+# and an empty file will abort the edit. If an error occurs while saving this file will be
+# reopened with the relevant failures.
+#
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: "2025-10-30T13:20:19Z"
+  labels:
+    app: nginx
+  name: nginx-svc
+  namespace: ckad
+  resourceVersion: "1478175"
+  uid: b9d371ee-5af5-441a-afdc-cdb5cbbad1e9
+spec:
+  clusterIP: 10.96.188.10
+  clusterIPs:
+  - 10.96.188.10
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: nginx
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}
